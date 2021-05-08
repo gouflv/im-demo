@@ -1,4 +1,5 @@
 import EE from 'event-emitter3'
+import { Connect } from './connect'
 
 export class WSService extends EE {
   constructor() {
@@ -7,10 +8,16 @@ export class WSService extends EE {
 
   connect() {
     return new Promise((resolve, reject) => {
-      new WSConnector(
+      new Connect(
         this.url,
         (ws) => {
           this.ws = ws
+          console.log(this.ws)
+          Object.assign(this.ws, {
+            onerror: this.onError.bind(this),
+            onmessage: this.onMessage.bind(this),
+            onclose: this.onClose.bind(this),
+          })
           resolve()
         },
         (error) => {
@@ -24,9 +31,19 @@ export class WSService extends EE {
     this.ws?.close()
   }
 
+  onClose(e) {
+    this.emit('close', e)
+  }
+  onError(e) {
+    this.emit('error', e)
+  }
+  onMessage(message) {
+    this.emit('message', message)
+  }
+
   send(data) {
-    if (!this.ws || this.ws.readyState !== 1) {
-      throw new Error('ws already closed')
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+      throw new Error('ws is not opening.')
     }
     this.ws.send(data)
   }
@@ -34,25 +51,13 @@ export class WSService extends EE {
   setUrl(url) {
     this.url = url
   }
-}
 
-class WSConnector {
-  constructor(url, onSuccess, onError) {
-    this.url = url
-    this.onSuccess = onSuccess
-    this.onError = onError
-
-    this.urlIndex = 0
-
-    this.run()
-  }
-  run() {
-    this.ws = new WebSocket(this.url[this.urlIndex])
-    this.ws.onopen = () => {
-      this.onSuccess(this.ws)
+  destroy() {
+    if (this.ws) {
+      this.ws.onerror = null
+      this.ws.onmessage = null
+      this.ws.onclose = null
     }
-    this.ws.onerror = (e) => {
-      this.onError(e)
-    }
+    this.ws.close()
   }
 }

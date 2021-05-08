@@ -19,11 +19,9 @@ export default {
   async mounted() {
     const wss = this.wss = new WSService()
     wss.setUrl([
-      'ws://localhost:8081',
-      'ws://localhost:8085',
-      'ws://localhost:8084',
       'ws://localhost:8083',
       'ws://localhost:8082',
+      'ws://localhost:8081',
     ])
    
     wss.on('open', (e) => {
