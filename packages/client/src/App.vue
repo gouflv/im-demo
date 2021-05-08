@@ -1,28 +1,52 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <button @click="sendMessage">Send Message</button>
+
+    <button @click="close">Close</button>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import {WSService} from './ws/service'
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
+  data() {
+    return {
+      wss: null
+    }
+  },
+  async mounted() {
+    const wss = this.wss = new WSService()
+    wss.setUrl([
+      'ws://localhost:8081',
+      'ws://localhost:8085',
+      'ws://localhost:8084',
+      'ws://localhost:8083',
+      'ws://localhost:8082',
+    ])
+   
+    wss.on('open', (e) => {
+      console.log(e)
+    })
+    wss.on('message', (message) => {
+      console.log(message)
+
+      if (message.data === 'close') {
+        wss.close()
+      }
+    })
+   
+    await wss.connect()
+    console.log('wss connected')
+  },
+  methods: {
+    sendMessage() {
+      this.wss.send('tad')
+    },
+    close() {
+      this.wss.close()
+    }
   }
 }
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
