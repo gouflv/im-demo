@@ -1,3 +1,5 @@
+const log = require('debug')('ws:connect')
+
 export class Connect {
   constructor(url, onSuccess, onError) {
     this.url = url
@@ -9,33 +11,45 @@ export class Connect {
     this.retry = 0
     this.retryTimeout = null
 
+    this.isManualClose = false
+
     this.connect()
   }
 
   connect() {
+    log('connect', this.url[this.urlIndex])
     this.ws = new WebSocket(this.url[this.urlIndex])
     this.ws.onopen = this.onOpen.bind(this)
     this.ws.onerror = this.onError.bind(this)
-    this.ws.close = this.onClose.bind(this)
+    this.ws.onclose = this.onClose.bind(this)
   }
 
-  onOpen() {
+  onOpen(e) {
+    log('opened', e)
     this.removeAllListeners()
+    log('opened ws', this.ws)
     this.onConnSuccess(this.ws)
   }
 
   onError(e) {
+    log('error', e)
     this.ws.close()
   }
 
   onClose(e) {
+    log('close', e)
     this.removeAllListeners()
+
+    if (this.isManualClose) {
+      return
+    }
 
     if (
       this.urlIndex >= this.url.length &&
       this.retry >= this.retryDelayQueue.length
     ) {
-      this.onConnError('ws connection fail')
+      log('all server fail to connect')
+      this.onConnError()
       return
     }
 
@@ -48,7 +62,7 @@ export class Connect {
   }
 
   reconnect() {
-    console.log(`ws will retry after ${this.retryDelayQueue[this.retry]}s`)
+    log(`retry after ${this.retryDelayQueue[this.retry]}s`)
 
     if (this.retryTimeout) {
       clearTimeout(this.retryTimeout)
@@ -61,13 +75,14 @@ export class Connect {
   }
 
   destroy() {
+    this.isManualClose = true
+
     if (this.retryTimeout) {
       clearTimeout(this.retryTimeout)
     }
 
-    this.removeAllListeners()
-
     if (this.ws) {
+      this.removeAllListeners()
       this.ws.close()
     }
   }

@@ -15,7 +15,13 @@ wss.on('connection', (ws) => {
   })
 
   ws.on('message', (message) => {
-    console.log(message)
-    ws.send('received: %s', message)
+    console.log('message', message)
+
+    if (message === 'close') {
+      ws.close()
+      return
+    }
+
+    ws.send(`received: ${message}`)
   })
 })

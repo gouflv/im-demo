@@ -1,8 +1,14 @@
 <template>
   <div id="app">
-    <button @click="sendMessage">Send Message</button>
-
-    <button @click="close">Close</button>
+    <p>
+      <button @click="sendMessage">Send Message</button>
+    </p>
+    <p>
+      <button @click="close">Close</button>
+    </p>
+    <p>
+      <button @click="sendClose">Server Close</button>
+    </p>
   </div>
 </template>
 
@@ -17,26 +23,23 @@ export default {
     }
   },
   async mounted() {
-    const wss = this.wss = new WSService()
-    wss.setUrl([
-      'ws://localhost:8083',
-      'ws://localhost:8082',
-      'ws://localhost:8081',
-    ])
-   
+    const wss = this.wss = new WSService(
+      [
+        'ws://localhost:8081',
+        'ws://localhost:8083',
+        'ws://localhost:8082',
+      ]
+    )
+
     wss.on('open', (e) => {
-      console.log(e)
     })
     wss.on('message', (message) => {
-      console.log(message)
-
       if (message.data === 'close') {
         wss.close()
       }
     })
    
     await wss.connect()
-    console.log('wss connected')
   },
   methods: {
     sendMessage() {
@@ -44,6 +47,9 @@ export default {
     },
     close() {
       this.wss.close()
+    },
+    sendClose() {
+      this.wss.send('close')
     }
   }
 }

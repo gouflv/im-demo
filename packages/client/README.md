@@ -1,19 +1,21 @@
-# client
+# WS Service
 
-## Project setup
-```
-yarn install
-```
+## Features
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+- Support multi server address:
 
-### Compiles and minifies for production
-```
-yarn build
-```
+    1. Use first address default, and auto switch to next if connection failed.
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+    2. Emit error if all server failed.
+
+- Reconnect with delay:
+
+    1. Reconnect when ws `error` and `close`.
+
+    2. Mark failed server and skip that when next try.
+
+- Disconnect:
+
+    1. From client
+
+    2. From server
