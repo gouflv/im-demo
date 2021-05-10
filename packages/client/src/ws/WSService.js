@@ -20,7 +20,7 @@ export class WSService extends EE {
           Object.assign(this.ws, {
             onerror: this.onError.bind(this),
             onmessage: this.onMessage.bind(this),
-            onclose: this.onClose.bind(this),
+            onclose: this.onClose.bind(this)
           })
           this.onOpen()
           resolve()
@@ -30,10 +30,6 @@ export class WSService extends EE {
         }
       )
     })
-  }
-
-  close() {
-    this.ws?.close()
   }
 
   onOpen() {
@@ -61,7 +57,7 @@ export class WSService extends EE {
     this.emit('message', message)
   }
 
-  async send (data) {
+  async send(data) {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
       log('ws is not open')
       return
@@ -75,13 +71,9 @@ export class WSService extends EE {
     this.ws.send(data)
   }
 
-  ping() {
+  ping() {}
 
-  }
-
-  pong() {
-
-  }
+  pong() {}
 
   cleanup() {
     if (this.connector) {

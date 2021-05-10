@@ -4,18 +4,36 @@
 
 - Support multi server address:
 
-    1. Use first address default, and auto switch to next if connection failed.
+  1. Use first address default, and auto switch to next if connection failed.
 
-    2. Emit error if all server failed.
+  2. Emit error if all server failed.
 
 - Reconnect with delay:
 
-    1. Reconnect when ws `error` and `close`.
+  1. Reconnect when ws `error` or `close`.
 
-    2. Mark failed server and skip that when next try.
+  2. Mark failed server and skip that when next try.
 
 - Disconnect:
 
-    1. From client
+  1. From client
 
-    2. From server
+  2. From server
+
+## WSServer
+
+### Native Events
+
+#### `open`
+
+#### `close`
+
+#### `error`
+
+#### `message`
+
+### Service Event
+
+#### `login`
+
+#### `logout`

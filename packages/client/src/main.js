@@ -6,5 +6,5 @@ Vue.config.productionTip = false
 localStorage.setItem('debug', 'ws:*')
 
 new Vue({
-  render: h => h(App),
+  render: (h) => h(App)
 }).$mount('#app')

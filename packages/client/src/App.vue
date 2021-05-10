@@ -13,32 +13,29 @@
 </template>
 
 <script>
-import {WSService} from './ws/service'
+import { WSService } from './ws'
 
 export default {
   name: 'App',
   data() {
     return {
-      wss: null
+      wss: null,
     }
   },
   async mounted() {
-    const wss = this.wss = new WSService(
-      [
-        'ws://localhost:8081',
-        'ws://localhost:8083',
-        'ws://localhost:8082',
-      ]
-    )
+    const wss = (this.wss = new WSService([
+      'ws://localhost:8081',
+      'ws://localhost:8083',
+      'ws://localhost:8082',
+    ]))
 
-    wss.on('open', (e) => {
-    })
+    wss.on('open', (e) => {})
     wss.on('message', (message) => {
       if (message.data === 'close') {
         wss.close()
       }
     })
-   
+
     await wss.connect()
   },
   methods: {
@@ -50,7 +47,7 @@ export default {
     },
     sendClose() {
       this.wss.send('close')
-    }
-  }
+    },
+  },
 }
 </script>
