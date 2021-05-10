@@ -5,7 +5,7 @@ export class HausosAdapter {
     this.frameFactory = protoRoot.lookup('protocol.Frame')
   }
 
-  createCmd(cmd = 0, body = {}) {
+  createCmd(cmd = '0000', body = {}) {
     const frameData = {
       header: {
         cmd,

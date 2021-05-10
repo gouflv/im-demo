@@ -5,10 +5,11 @@ import { HausosAdapter } from './adapter/hausos'
 const log = require('debug')('ws:service')
 
 export class WSService extends EE {
-  constructor(url) {
+  constructor(url, token) {
     super()
     this.adapter = new HausosAdapter()
     this.url = url
+    this.token = token
 
     this.isAlive = false
     this.isManualClose = false
@@ -20,8 +21,8 @@ export class WSService extends EE {
     return new Promise((resolve, reject) => {
       this.connector = new WSConnect(
         this.url,
-        (ws) => {
-          this.onOpen(ws)
+        async (ws) => {
+          await this.onOpen(ws)
           resolve()
         },
         (error) => {
@@ -31,7 +32,7 @@ export class WSService extends EE {
     })
   }
 
-  onOpen(ws) {
+  async onOpen(ws) {
     log('open')
 
     this.ws = ws
@@ -45,7 +46,9 @@ export class WSService extends EE {
 
     this.isAlive = true
 
-    // TODO send ping, and check pong in time
+    await this.login()
+
+    this.ping()
   }
 
   async onClose(e) {
@@ -54,9 +57,9 @@ export class WSService extends EE {
 
     this.isAlive = false
 
-    // if (!this.isManualClose) {
-    //   await this.connect()
-    // }
+    if (!this.isManualClose) {
+      await this.connect()
+    }
   }
 
   onError(e) {
@@ -84,13 +87,32 @@ export class WSService extends EE {
     this.ws.send(this.adapter.createCmd(cmd, body))
   }
 
-  ping() {}
+  async login() {
+    return this.send('0001', {
+      token: this.token,
+      clientId: String(Math.random())
+    })
+  }
 
-  pong() {}
+  ping() {
+    if (this.pingInterval) {
+      clearInterval(this.pingInterval)
+    }
+    this.pingInterval = setInterval(() => {
+      this.send('0009', {})
+    }, 30000)
+  }
+
+  close() {
+    this.isManualClose = true
+  }
 
   cleanup() {
     if (this.connector) {
       this.connector.destroy()
+    }
+    if (this.pingInterval) {
+      clearInterval(this.pingInterval)
     }
     this.ws = null
   }
