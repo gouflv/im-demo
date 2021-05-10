@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "proto": "pbjs -t json-module -w commonjs -o src/ws/adapter/proto.js  src/ws/adapter/*.proto"
   },
   "dependencies": {
     "core-js": "^3.6.5",
     "debug": "^4.3.1",
     "event-emitter3": "^1.0.4",
+    "protobufjs": "^6.11.2",
     "vue": "^2.6.11",
     "ws": "^7.4.5"
   },

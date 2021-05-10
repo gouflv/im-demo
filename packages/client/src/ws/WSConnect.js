@@ -11,8 +11,6 @@ export class WSConnect {
     this.retry = 0
     this.retryTimeout = null
 
-    this.isManualClose = false
-
     this.connect()
   }
 
@@ -39,10 +37,6 @@ export class WSConnect {
   onClose(e) {
     log('close', e)
     this.removeAllListeners()
-
-    if (this.isManualClose) {
-      return
-    }
 
     if (
       this.urlIndex >= this.url.length &&
@@ -75,8 +69,6 @@ export class WSConnect {
   }
 
   destroy() {
-    this.isManualClose = true
-
     if (this.retryTimeout) {
       clearTimeout(this.retryTimeout)
     }

@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package protocol;
+
+// protoc --proto_path=$GOPATH/src:. --go_out=plugins=grpc:$GOPATH/src gateway/protocol/transport.proto
+option go_package = "git.skyunion.net/game-chat/hausos/gateway/protocol/transport/grpc";
+
+service Transport {
+	rpc Stream(stream Frame) returns (stream Frame) {}
+}
+
+message Frame {
+	map<string, string> header  = 1;
+	bytes body = 2;
+}

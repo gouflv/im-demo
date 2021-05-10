@@ -22,7 +22,27 @@
 
 ## WSServer
 
-### Native Events
+### Constructor
+
+WSServer(url)
+
+- url: string[]
+
+### Methods
+
+#### `connect()`
+
+Start connecting. 
+
+return a Promise that resolved when success, reject if all url failed. 
+
+#### `on(event, fn)`
+
+#### `off(event, fn?)`
+
+#### `removeAllListeners(event?)`
+
+### WS Events
 
 #### `open`
 
@@ -32,7 +52,7 @@
 
 #### `message`
 
-### Service Event
+### Service Events
 
 #### `login`
 

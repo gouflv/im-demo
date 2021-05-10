@@ -1,28 +1,27 @@
 import EE from 'event-emitter3'
 import { WSConnect } from './WSConnect'
+import { HausosAdapter } from './adapter/hausos'
 
 const log = require('debug')('ws:service')
 
 export class WSService extends EE {
   constructor(url) {
     super()
+    this.adapter = new HausosAdapter()
     this.url = url
+
     this.isAlive = false
+    this.isManualClose = false
   }
 
-  connect() {
+  async connect() {
     this.cleanup()
+
     return new Promise((resolve, reject) => {
       this.connector = new WSConnect(
         this.url,
         (ws) => {
-          this.ws = ws
-          Object.assign(this.ws, {
-            onerror: this.onError.bind(this),
-            onmessage: this.onMessage.bind(this),
-            onclose: this.onClose.bind(this)
-          })
-          this.onOpen()
+          this.onOpen(ws)
           resolve()
         },
         (error) => {
@@ -32,19 +31,32 @@ export class WSService extends EE {
     })
   }
 
-  onOpen() {
+  onOpen(ws) {
     log('open')
+
+    this.ws = ws
+    Object.assign(this.ws, {
+      onerror: this.onError.bind(this),
+      onmessage: this.onMessage.bind(this),
+      onclose: this.onClose.bind(this)
+    })
+
     this.emit('open')
 
     this.isAlive = true
+
     // TODO send ping, and check pong in time
   }
 
-  onClose(e) {
+  async onClose(e) {
     log('close', e)
     this.emit('close', e)
 
     this.isAlive = false
+
+    // if (!this.isManualClose) {
+    //   await this.connect()
+    // }
   }
 
   onError(e) {
@@ -57,7 +69,7 @@ export class WSService extends EE {
     this.emit('message', message)
   }
 
-  async send(data) {
+  async send(cmd, body) {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
       log('ws is not open')
       return
@@ -67,8 +79,9 @@ export class WSService extends EE {
        */
       // await this.connect()
     }
-    log('send', JSON.stringify(data))
-    this.ws.send(data)
+    log('send', JSON.stringify(body))
+
+    this.ws.send(this.adapter.createCmd(cmd, body))
   }
 
   ping() {}
@@ -79,5 +92,6 @@ export class WSService extends EE {
     if (this.connector) {
       this.connector.destroy()
     }
+    this.ws = null
   }
 }
