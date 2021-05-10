@@ -1,5 +1,5 @@
 import EE from 'event-emitter3'
-import { Connect } from './connect'
+import { WSConnect } from './WSConnect'
 
 const log = require('debug')('ws:service')
 
@@ -13,7 +13,7 @@ export class WSService extends EE {
   connect() {
     this.cleanup()
     return new Promise((resolve, reject) => {
-      this.connector = new Connect(
+      this.connector = new WSConnect(
         this.url,
         (ws) => {
           this.ws = ws

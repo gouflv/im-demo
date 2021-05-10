@@ -1,6 +1,6 @@
 const log = require('debug')('ws:connect')
 
-export class Connect {
+export class WSConnect {
   constructor(url, onSuccess, onError) {
     this.url = url
     this.onConnSuccess = onSuccess
