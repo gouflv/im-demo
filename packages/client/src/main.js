@@ -3,7 +3,7 @@ import App from './App.vue'
 
 Vue.config.productionTip = false
 
-localStorage.setItem('debug', 'ws:*')
+localStorage.setItem('debug', 'ws:*, hausos')
 
 new Vue({
   render: (h) => h(App)

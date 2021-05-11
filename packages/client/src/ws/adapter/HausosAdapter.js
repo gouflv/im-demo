@@ -1,11 +1,53 @@
-import protoRoot from './proto'
+import protoRoot from '../proto'
+import { WSService } from '../core/WSService'
+
+const log = require('debug')('hausos')
 
 export class HausosAdapter {
-  constructor() {
+  constructor(url, token) {
+    this.url = url
+    this.token = token
     this.frameFactory = protoRoot.lookup('protocol.Frame')
+    this.msgReqId = 0
+
+    //
+    this.pingInterval = null
+
+    this.initWSService()
   }
 
-  createCmd(cmd = '0000', body = {}) {
+  initWSService() {
+    this.wss = new WSService(this.url)
+    this.wss.on('open', () => {
+      this.login()
+    })
+    this.wss.on('message')
+    this.wss.connect()
+  }
+
+  async login() {
+    log('login')
+    return this.send('0001', {
+      token: this.token,
+      clientId: String(Math.random())
+    })
+  }
+
+  ping() {
+    if (this.pingInterval) {
+      clearInterval(this.pingInterval)
+    }
+    this.pingInterval = setInterval(() => {
+      this.send('0009', {})
+    }, 30000)
+  }
+
+  send(cmd, body) {
+    log('send', cmd, body)
+    this.wss.send(this.createFrame(cmd, body))
+  }
+
+  createFrame(cmd = '0000', body = {}) {
     const frameData = {
       header: {
         cmd,
@@ -15,6 +57,17 @@ export class HausosAdapter {
     }
     let frame = this.frameFactory.create(frameData)
     return this.frameFactory.encode(frame).finish()
+  }
+
+  destroy() {
+    if (this.pingInterval) {
+      clearInterval(this.pingInterval)
+    }
+
+    if (this.wss) {
+      this.wss.removeAllListeners()
+      this.wss.destroy()
+    }
   }
 }
 

@@ -66,7 +66,7 @@ export class WSService extends EE {
   }
 
   async send(message) {
-    log('send', JSON.stringify(message))
+    log('send', message.buffer ?? message)
     this.ws?.send(message)
   }
 
@@ -80,5 +80,10 @@ export class WSService extends EE {
       this.connector.destroy()
     }
     this.ws = null
+  }
+
+  destroy() {
+    this.cleanup()
+    // TODO stop WSConnect onSuccess
   }
 }

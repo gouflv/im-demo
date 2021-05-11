@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "proto": "pbjs -t json-module -w commonjs -o src/ws/adapter/proto.js  src/ws/adapter/*.proto"
+    "proto": "pbjs -t json-module -w commonjs -o src/ws/proto/index.js  src/ws/proto/*.proto"
   },
   "dependencies": {
     "core-js": "^3.6.5",
