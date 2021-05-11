@@ -15,9 +15,6 @@
 <script>
 import { WSService } from './ws'
 
-const TOKEN =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYXBvbGxvMTEiLCJ1c2VyX2RhdGEiOiJ7JTIybGV2ZWwlMjI6MjgsJTIybmFtZSUyMjolMjJ0ZXN0MTElMjJ9IiwiZXhwIjoxNjIwNDU4MDc2LCJqdGkiOiJjMmIyb2o1bjdvZDJrM3YwNXNzZyIsImlhdCI6MTYyMDQ1NDQ3NiwiaXNzIjoiSGF1c29zIiwibmJmIjoxNjIwNDU0NDc2LCJzdWIiOiJhcG9sbG8xMSJ9.FrtAmOWRLytPfOpw-wQUnZGLdeHh90fKfq-FL1LRQP0'
-
 export default {
   name: 'App',
   data() {
@@ -30,7 +27,7 @@ export default {
       'ws://localhost:8081',
       'ws://localhost:8083',
       'ws://localhost:8082',
-    ], TOKEN))
+    ]))
 
     wss.on('open', (e) => {})
     wss.on('message', (message) => {

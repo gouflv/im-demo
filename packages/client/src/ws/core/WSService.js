@@ -1,18 +1,16 @@
 import EE from 'event-emitter3'
 import { WSConnect } from './WSConnect'
-import { HausosAdapter } from './adapter/hausos'
 
 const log = require('debug')('ws:service')
 
 export class WSService extends EE {
-  constructor(url, token) {
+  constructor(url) {
     super()
-    this.adapter = new HausosAdapter()
     this.url = url
-    this.token = token
-
-    this.isAlive = false
+    this.connector = null
+    this.ws = null
     this.isManualClose = false
+    this.autoReconnect = true
   }
 
   async connect() {
@@ -33,7 +31,7 @@ export class WSService extends EE {
   }
 
   async onOpen(ws) {
-    log('open')
+    log('open', ws)
 
     this.ws = ws
     Object.assign(this.ws, {
@@ -43,21 +41,16 @@ export class WSService extends EE {
     })
 
     this.emit('open')
-
-    this.isAlive = true
-
-    await this.login()
-
-    this.ping()
   }
 
   async onClose(e) {
     log('close', e)
     this.emit('close', e)
 
-    this.isAlive = false
-
-    if (!this.isManualClose) {
+    /**
+     * Do reconnect
+     */
+    if (this.autoReconnect && !this.isManualClose) {
       await this.connect()
     }
   }
@@ -72,47 +65,19 @@ export class WSService extends EE {
     this.emit('message', message)
   }
 
-  async send(cmd, body) {
-    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
-      log('ws is not open')
-      return
-
-      /**
-       * May wait for reconnect here, and continue send action
-       */
-      // await this.connect()
-    }
-    log('send', JSON.stringify(body))
-
-    this.ws.send(this.adapter.createCmd(cmd, body))
-  }
-
-  async login() {
-    return this.send('0001', {
-      token: this.token,
-      clientId: String(Math.random())
-    })
-  }
-
-  ping() {
-    if (this.pingInterval) {
-      clearInterval(this.pingInterval)
-    }
-    this.pingInterval = setInterval(() => {
-      this.send('0009', {})
-    }, 30000)
+  async send(message) {
+    log('send', JSON.stringify(message))
+    this.ws?.send(message)
   }
 
   close() {
     this.isManualClose = true
+    this.ws.close()
   }
 
   cleanup() {
     if (this.connector) {
       this.connector.destroy()
-    }
-    if (this.pingInterval) {
-      clearInterval(this.pingInterval)
     }
     this.ws = null
   }

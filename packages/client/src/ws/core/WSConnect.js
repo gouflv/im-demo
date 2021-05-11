@@ -6,10 +6,12 @@ export class WSConnect {
     this.onConnSuccess = onSuccess
     this.onConnError = onError
 
+    this.retryDelayQueue = [1, 1, 2, 3, 5]
     this.urlIndex = 0
-    this.retryDelayQueue = [1, 2, 4]
     this.retry = 0
     this.retryTimeout = null
+
+    this.ws = null
 
     this.connect()
   }
@@ -23,9 +25,8 @@ export class WSConnect {
   }
 
   onOpen(e) {
-    log('opened', e)
+    log('open', e)
     this.removeAllListeners()
-    log('opened ws', this.ws)
     this.onConnSuccess(this.ws)
   }
 
@@ -35,18 +36,24 @@ export class WSConnect {
   }
 
   onClose(e) {
-    log('close', e)
+    log('close')
     this.removeAllListeners()
 
+    /**
+     * Stop if last url attempting failed.
+     */
     if (
-      this.urlIndex >= this.url.length &&
-      this.retry >= this.retryDelayQueue.length
+      this.urlIndex >= this.url.length - 1 &&
+      this.retry >= this.retryDelayQueue.length - 1
     ) {
-      log('all server fail to connect')
-      this.onConnError()
+      log('connection failed')
+      this.onConnError('No server has been connected.')
       return
     }
 
+    /**
+     * Try next url if attempts to the max
+     */
     if (this.retry >= this.retryDelayQueue.length) {
       this.retry = 0
       this.urlIndex++
@@ -56,7 +63,7 @@ export class WSConnect {
   }
 
   reconnect() {
-    log(`retry after ${this.retryDelayQueue[this.retry]}s`)
+    log(`attempt ${this.retry + 1} after ${this.retryDelayQueue[this.retry]}s`)
 
     if (this.retryTimeout) {
       clearTimeout(this.retryTimeout)
@@ -69,6 +76,9 @@ export class WSConnect {
   }
 
   destroy() {
+    this.onConnSuccess = null
+    this.onConnError = null
+
     if (this.retryTimeout) {
       clearTimeout(this.retryTimeout)
     }

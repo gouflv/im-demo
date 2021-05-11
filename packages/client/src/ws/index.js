@@ -1,1 +1,1 @@
-export * from './WSService'
+export * from './core/WSService'
