@@ -1,12 +1,14 @@
-import protoRoot from '../proto'
+import EE from 'event-emitter3'
 import { WSService } from '../core/WSService'
+import protoRoot from '../proto'
 import { CMD } from './command'
 import { bytesToStr, readBlob, strToBytes } from './utils'
 
 const log = require('debug')('hausos:adapter')
 
-export class HausosAdapter {
+export class HausosAdapter extends EE {
   constructor(url, token) {
+    super()
     this.url = url
     this.token = token
     this.frameFactory = protoRoot.lookup('protocol.Frame')
@@ -15,11 +17,9 @@ export class HausosAdapter {
 
     this.pingDuration = 30000
     this.pingInterval = null
-
-    this.initWSService()
   }
 
-  initWSService() {
+  connect() {
     this.wss = new WSService(this.url)
     this.wss.on('open', () => {
       this.login()
@@ -71,6 +71,11 @@ export class HausosAdapter {
   //#region event handlers
 
   onLoginResponse(frameBody) {
+    if (frameBody.error) {
+      console.error(frameBody.error)
+      return
+    }
+    this.emit('login')
     this.ping()
   }
 

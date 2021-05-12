@@ -79,6 +79,7 @@ export class WSService extends EE {
     if (this.connector) {
       this.connector.destroy()
     }
+    this.ws.close()
     this.ws = null
   }
 
