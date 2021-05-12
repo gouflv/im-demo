@@ -17,7 +17,7 @@ import { WSService } from './ws'
 import { HausosAdapter } from './ws/adapter/HausosAdapter'
 
 const TOKEN =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYXBvbGxvMTEiLCJ1c2VyX2RhdGEiOiJ7JTIybGV2ZWwlMjI6MjgsJTIybmFtZSUyMjolMjJ0ZXN0MTElMjJ9IiwiZXhwIjoxNjIwNDU4MDc2LCJqdGkiOiJjMmIyb2o1bjdvZDJrM3YwNXNzZyIsImlhdCI6MTYyMDQ1NDQ3NiwiaXNzIjoiSGF1c29zIiwibmJmIjoxNjIwNDU0NDc2LCJzdWIiOiJhcG9sbG8xMSJ9.FrtAmOWRLytPfOpw-wQUnZGLdeHh90fKfq-FL1LRQP0'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZ2ciLCJ1c2VyX2RhdGEiOiJ7XCJsZXZlbFwiOjYxLFwibmFtZVwiOlwiZ2dcIn0iLCJleHAiOjE2MjA4NzgyNjIsImp0aSI6ImMyZG9rdG03dXVmZnRzbWIxamswIiwiaWF0IjoxNjIwODA2MjYyLCJpc3MiOiJIYXVzb3MiLCJuYmYiOjE2MjA4MDYyNjIsInN1YiI6ImdnIn0.XaZIBNNADmJtGFR0CLxjlIEg7SLENlbmx5gxt5GYrhw'
 
 export default {
   name: 'App',
@@ -43,7 +43,7 @@ export default {
     // await wss.connect()
 
     const ws = new HausosAdapter([
-      'ws://localhost:8081',
+      'ws://34.105.22.29:31310/hausos/',
       'ws://localhost:8083',
       'ws://localhost:8082',
     ], TOKEN)
