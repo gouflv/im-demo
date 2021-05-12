@@ -1,6 +1,6 @@
-## WS Service
+# WS Service
 
-### Features
+## Features
 
 - Support multi server address:
 
@@ -20,32 +20,32 @@
 
   2. From server
 
-### Constructor
+## Constructor
 
 WSServer(url)
 
 - url: string[]
 
-### Methods
+## Methods
 
-#### `connect()`
+`connect()`
 
 Start connect, or reconnect.
 
 return a Promise that resolved when success, reject if all url failed. 
 
-#### `on(event, fn)`
+`on(event, fn)`
 
-#### `off(event, fn?)`
+`off(event, fn?)`
 
-#### `removeAllListeners(event?)`
+`removeAllListeners(event?)`
 
-### WS Events
+## Events
 
-#### `open`
+`open`
 
-#### `close`
+`close`
 
-#### `error`
+`error`
 
-#### `message`
+`message`
