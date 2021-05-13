@@ -45,7 +45,7 @@ export default {
 .chat {
   display: flex;
   flex-direction: column;
-  width: 600px;
-  height: 600px;
+  height: 100vh;
+  padding: 16px;
 }
 </style>

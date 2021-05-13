@@ -44,15 +44,15 @@ export default {
 </script>
 
 <style scoped lang="less">
-.message-item {
+@block: .message-item;
+
+@{block} {
   display: flex;
+  flex-direction: row;
   align-items: flex-start;
   padding: 8px 16px;
 
-  &--direction-rtl {
-    order: revert;
-  }
-
+  // elements
   &__avatar {
     flex: 0 0 auto;
     margin-right: 8px;
@@ -82,6 +82,28 @@ export default {
     .status {
       margin-left: 8px;
       color: #999;
+    }
+  }
+
+  // modifier
+  &--direction-rtl {
+    flex-direction: row-reverse;
+
+    @{block}__avatar {
+      margin-right: 0;
+      margin-left: 8px;
+    }
+
+    @{block}__header {
+      flex-direction: row-reverse;
+    }
+
+    @{block}__content {
+      flex-direction: row-reverse;
+      .status {
+        margin-left: 0;
+        margin-right: 8px;
+      }
     }
   }
 }

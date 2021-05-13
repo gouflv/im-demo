@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@vue/composition-api": "^1.0.0-rc.8",
+    "autosize": "^4.0.2",
     "core-js": "^3.6.5",
     "debug": "^4.3.1",
     "event-emitter3": "^1.0.4",

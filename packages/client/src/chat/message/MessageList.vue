@@ -1,10 +1,11 @@
 <template>
   <div class="message-list" ref="scrollerRef">
     <MessageItem
+      ref="itemRefs"
       v-for="(item, index) in items"
       :key="index"
       :data="item"
-      ref="itemRefs"
+      :direction="item.id % 2 === 0 ? 'ltr' : 'rtl'"
     />
   </div>
 </template>

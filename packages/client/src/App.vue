@@ -47,5 +47,17 @@ export default {
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  outline: none;
+}
+body {
+  font-size: 16px;
+  font-family: sans-serif;
+  line-height: 1.5;
+}
+input, textarea {
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
 }
 </style>
