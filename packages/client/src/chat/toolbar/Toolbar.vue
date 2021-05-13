@@ -12,7 +12,7 @@ export default {
 
 <style scoped>
 .toolbar {
-  height: 50px;
+  flex: 0 0 50px;
   background-color: #eee;
 }
 </style>

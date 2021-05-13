@@ -3,14 +3,17 @@
     <MessageList />
     <Toolbar />
     <InputField />
+    <div>
+      <button @click="onAdd">Add message</button>
+    </div>
   </div>
 </template>
 
 <script>
 import { onUnmounted } from '@vue/composition-api'
+import chatService from './ChatService'
 import InputField from './input/InputField'
 import MessageList from './message/MessageList.vue'
-import store from './store'
 import Toolbar from './toolbar/Toolbar.vue'
 
 export default {
@@ -21,13 +24,19 @@ export default {
     InputField
   },
   setup() {
-    // store.adapter.connect()
+    // chatService.adapter.connect()
 
     onUnmounted(() => {
-      store.destroy()
+      chatService.destroy()
     })
 
-    return {}
+    function onAdd() {
+      chatService.addMessage()
+    }
+
+    return {
+      onAdd
+    }
   }
 }
 </script>

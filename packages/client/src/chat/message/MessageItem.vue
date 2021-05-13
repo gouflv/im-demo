@@ -1,25 +1,28 @@
 <template>
-  <div class="message-item" :class="{ 'message-item--direction-rtl': direction === 'rtl' }">
-    <div class="message-item__thumb">
-
+  <div
+    ref="wrapperRef"
+    class="message-item"
+    :class="{ 'message-item--direction-rtl': direction === 'rtl' }"
+    :data-message-id="data.id"
+  >
+    <div class="message-item__avatar">
+      <div class="avatar"></div>
     </div>
     <div class="message-item__bubble">
       <div class="message-item__header">
-        {{data.from}}
+        <div class="name">{{data.from}}</div>
       </div>
       <div class="message-item__content">
         <div class="text">{{data.content}}</div>
-      </div>
-      <div v-if="data.read" class="message-item__status">
-        Read
+        <div v-show="data.read" class="status">
+          Read
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { inject, onMounted } from '@vue/composition-api'
-import { useInViewDetect } from '../../use/useInviewDetect'
 
 export default {
   name: 'MessageItem',
@@ -34,22 +37,8 @@ export default {
       validator: v => ['ltr', 'rtl'].includes(v)
     }
   },
-  setup() {
-    const scroller = inject('scroller')
+  setup(props) {
 
-    const { init: InViewDetect } = useInViewDetect(scroller, onRead)
-    function onRead() {
-      // TODO
-    }
-
-    onMounted(() => {
-      // TODO detect inView event only if message unread
-      InViewDetect()
-
-      console.log(scroller.value)
-    })
-
-    return {}
   }
 }
 </script>
@@ -58,22 +47,42 @@ export default {
 .message-item {
   display: flex;
   align-items: flex-start;
-  margin: 8px 0 8px 16px;
+  padding: 8px 16px;
 
   &--direction-rtl {
     order: revert;
-    margin-right: 16px;
-    margin-left: 0;
   }
 
-  &__thumb {
-    width: 40px;
-    height: 40px;
-    background-color: #eee;
-    border-radius: 100%;
+  &__avatar {
+    flex: 0 0 auto;
+    margin-right: 8px;
+    .avatar {
+      width: 40px;
+      height: 40px;
+      background-color: #eee;
+      border-radius: 100%;
+    }
   }
+
   &__bubble {}
 
-  &__content-text {}
+  &__header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 8px;
+    .name {
+    }
+  }
+
+  &__content {
+    display: flex;
+    .text {
+    }
+    .status {
+      margin-left: 8px;
+      color: #999;
+    }
+  }
 }
 </style>

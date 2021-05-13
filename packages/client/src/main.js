@@ -11,6 +11,7 @@ localStorage.setItem(
     // 'ws:connect',
     // 'ws:service',
     'hausos:*'
+    // 'useInViewDetect'
   ].join(',')
 )
 
