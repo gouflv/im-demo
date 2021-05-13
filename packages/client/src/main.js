@@ -10,7 +10,8 @@ localStorage.setItem(
   [
     // 'ws:connect',
     // 'ws:service',
-    'hausos:*'
+    'hausos:*',
+    'ChatService'
     // 'useInViewDetect'
   ].join(',')
 )

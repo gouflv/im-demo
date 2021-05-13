@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import { onUnmounted } from '@vue/composition-api'
-import chatService from './ChatService'
+import { onUnmounted, provide, reactive } from '@vue/composition-api'
+import { ChatService } from './ChatService'
 import InputField from './input/InputField'
 import MessageList from './message/MessageList.vue'
 import Toolbar from './toolbar/Toolbar.vue'
@@ -24,6 +24,8 @@ export default {
     InputField
   },
   setup() {
+    const chatService = reactive(new ChatService())
+    provide('chatService', chatService)
     // chatService.adapter.connect()
 
     onUnmounted(() => {

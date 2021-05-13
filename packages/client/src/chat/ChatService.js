@@ -1,5 +1,6 @@
-import Vue from 'vue'
 import { HausosAdapter } from '../ws/adapter/HausosAdapter'
+
+const log = require('debug')('ChatService')
 
 let messageId = 1
 
@@ -11,7 +12,7 @@ export const ChatState = {
   Finished: 4
 }
 
-class ChatService {
+export class ChatService {
   /**
    * ChatState
    * @type {number}
@@ -22,8 +23,13 @@ class ChatService {
 
   adapter = new HausosAdapter()
 
-  addMessage() {
-    this.messages.push(createMessage())
+  addMessage(content) {
+    this.messages.push(createMessage(content))
+  }
+
+  readMessage(item) {
+    log('message has been read', item)
+    item.read = true
   }
 
   destroy() {
@@ -31,12 +37,10 @@ class ChatService {
   }
 }
 
-export default Vue.observable(new ChatService())
-
-function createMessage() {
+function createMessage(content) {
   return {
     id: ++messageId,
-    content: `Message${messageId}`,
+    content: content ?? `Message${messageId}`,
     from: 'gg',
     send: true,
     read: false

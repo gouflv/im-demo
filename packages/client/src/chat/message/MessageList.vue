@@ -11,10 +11,9 @@
 </template>
 
 <script>
-import { onMounted, ref, toRef, watch } from '@vue/composition-api'
+import { inject, onMounted, ref, toRef, watch } from '@vue/composition-api'
 import throttle from 'lodash.throttle'
 import { useInViewDetect } from '../../use/useInviewDetect'
-import chatService from '../ChatService'
 import MessageItem from './MessageItem'
 
 export default {
@@ -22,6 +21,7 @@ export default {
   components: { MessageItem },
 
   setup() {
+    const chatService = inject('chatService')
     const items = toRef(chatService, 'messages')
     const scrollerRef = ref(null)
     const itemRefs = ref([])
@@ -69,7 +69,7 @@ export default {
 
     //#region actions
     function setMessageRead(item) {
-      item.read = true
+      chatService.readMessage(item)
     }
     //#endregion
 
