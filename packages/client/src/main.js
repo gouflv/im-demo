@@ -8,11 +8,11 @@ Vue.use(VueCompositionAPI)
 localStorage.setItem(
   'debug',
   [
-    // 'ws:connect',
-    // 'ws:service',
+    'ws:connect',
+    'ws:service',
     'hausos:*',
-    'ChatService'
-    // 'useInViewDetect'
+    'ChatService',
+    'useInViewDetect'
   ].join(',')
 )
 

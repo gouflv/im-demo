@@ -86,6 +86,7 @@ export class WSConnect {
     if (this.ws) {
       this.removeAllListeners()
       this.ws.close()
+      this.ws = null
     }
   }
 

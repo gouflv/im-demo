@@ -26,7 +26,7 @@ export default {
   setup() {
     const chatService = reactive(new ChatService())
     provide('chatService', chatService)
-    // chatService.adapter.connect()
+    chatService.adapter.connect()
 
     onUnmounted(() => {
       chatService.destroy()
